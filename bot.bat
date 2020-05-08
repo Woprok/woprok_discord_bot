@@ -7,7 +7,6 @@ E:
 SET isRelease=%1%
 IF DEFINED isRelease (
 ECHO DEFINED
-
 cargo build --release
 E:\Projects\woprok_discord_bot\target\release\woprok_discord_bot.exe
 ) ELSE (
