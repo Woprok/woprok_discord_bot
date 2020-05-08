@@ -10,4 +10,4 @@ Cargo.lock
 **/*.rs.bk
 
 # My ignore files due to security
-src/bot/bot_token_provider.rs
+src/bot/bot_token_constants.rs
