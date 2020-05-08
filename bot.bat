@@ -1,6 +1,6 @@
 @ECHO off
 ::Rust Compile Script
-::Change Directory
+::Change directory
 CD E:\Projects\woprok_discord_bot
 E:
 
@@ -15,3 +15,7 @@ cargo build
 E:\Projects\woprok_discord_bot\target\debug\woprok_discord_bot.exe
 )
 PAUSE
+::Update cargo dependencies with:
+::cargo update
+::Open documentation with:
+::cargo doc --open 
