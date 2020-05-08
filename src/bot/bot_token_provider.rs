@@ -1,4 +1,3 @@
-
 use std::env;
 
 pub fn set_environment_variables()
