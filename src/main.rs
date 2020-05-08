@@ -1,3 +1,6 @@
+//Mods
+mod bot;
+
 //Usings
 use std::io;
 use std::cmp::Ordering;
@@ -9,9 +12,21 @@ const BOT_LUCKY_NUMBER:u32 = 6_7_1996;
 fn main()
 {
     println!("I am Rust Bot a.k.a {}. Smart and Edgy! My lucky number is: {} :)", BOT_NAME, BOT_LUCKY_NUMBER);
-    slay_johnny_announcer();
-    rise_of_weebs();
-    guess_game();
+    if true 
+    {
+        println!("Execution: Setting up environment.");
+        bot::bot_token_provider::set_environment_variables();
+        println!("Execution: Starting bot.");
+        bot::example_bot_1_1::example_bot_1_1_main();
+        println!("Execution: Bot is dead!");
+    }
+    else 
+    {
+        slay_johnny_announcer();
+        rise_of_weebs();
+        guess_game();
+        bot::example_bot_1::example_bot_1_main();
+    }
 }
 
 fn slay_johnny_announcer()
@@ -55,12 +70,14 @@ fn guess_game()
         io::stdin()
             .read_line(&mut user_guess)
             .expect("How dare you!?");
+
         let user_guess:i32 = match user_guess
             .trim()
             .parse()
             {
                 Ok(num) => num,
-                Err(_) => {
+                Err(_) => 
+                {
                     if guess_game_process_wrong_answer(user_guess, secret_number) == 1 
                     { 
                         break; 
@@ -76,7 +93,7 @@ fn guess_game()
         {
             Ordering::Less => println!("Nope, you undermined me!"),
             Ordering::Greater => println!("Nope, you expect too much from me!"),
-            Ordering::Equal =>
+            Ordering::Equal => 
             {
                 println!("You did it!");
                 break;
