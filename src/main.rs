@@ -3,9 +3,12 @@ use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
 
+const BOT_NAME:&str = "Woprok";
+const BOT_LUCKY_NUMBER:u32 = 6_7_1996;
+
 fn main()
 {
-    println!("I am Rust Bot. Smart and Edgy!");
+    println!("I am Rust Bot a.k.a {}. Smart and Edgy! My lucky number is: {} :)", BOT_NAME, BOT_LUCKY_NUMBER);
     slay_johnny_announcer();
     rise_of_weebs();
     guess_game();
@@ -21,10 +24,29 @@ fn rise_of_weebs()
     println!("Join us, you can't run away!");
 }
 
+fn guess_game_process_wrong_answer(guess:String, secret:i32) -> i32
+{
+    let trim_guess = guess.trim();
+    if trim_guess == "quit" 
+    {
+        println!("Weakling!");
+        1
+    }
+    else if trim_guess == "hint"
+    {
+        println!("I am nice, here is your number: {}", secret);
+        0
+    }
+    else
+    {
+        println!("Please don't try to break me! I can do that myself!");
+        0
+    }
+}
+
 fn guess_game()
 {
-    let secret_number = rand::thread_rng().gen_range(0,101);
-    println!("The secret number is: {}", secret_number);
+    let secret_number = rand::thread_rng().gen_range(i32::min_value(), i32::max_value());
     println!("Guess the number!");
     loop
     {
@@ -33,26 +55,19 @@ fn guess_game()
         io::stdin()
             .read_line(&mut user_guess)
             .expect("How dare you!?");
-        let user_guess:u32 = match user_guess
+        let user_guess:i32 = match user_guess
             .trim()
             .parse()
             {
                 Ok(num) => num,
                 Err(_) => {
-                    if user_guess.trim() == "quit" 
+                    if guess_game_process_wrong_answer(user_guess, secret_number) == 1 
+                    { 
+                        break; 
+                    } 
+                    else 
                     {
-                        println!("Weakling!");
-                        break;
-                    }
-                    else if user_guess.trim() == "hint"
-                    {
-                        println!("I am nice, here is your number: {}", secret_number);
-                        continue;
-                    }
-                    else
-                    {
-                        println!("Please don't try to break me! I can do that myself!");
-                        continue;
+                        continue; 
                     }
                 }
             };
