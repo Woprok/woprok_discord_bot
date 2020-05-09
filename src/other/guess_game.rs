@@ -1,7 +1,10 @@
+//Usings
 use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
 
+//Methods
+// Implementation of simple guess_game.
 pub fn guess_game()
 {
     let secret_number = rand::thread_rng().gen_range(i32::min_value(), i32::max_value());
@@ -45,6 +48,7 @@ pub fn guess_game()
     }
 }
 
+// Process a non numerical answer.
 fn guess_game_process_wrong_answer(guess:String, secret:i32) -> i32
 {
     let trim_guess = guess.trim();

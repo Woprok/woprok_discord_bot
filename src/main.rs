@@ -1,21 +1,23 @@
 //Mods
 mod bot;
+mod bot_commands;
 mod other;
 
 //Usings
 
-const BOT_NAME:&str = "Woprok";
-const BOT_LUCKY_NUMBER:u32 = 6_7_1996;
-
 fn main()
 {
-    println!("I am Rust Bot a.k.a {}. Smart and Edgy! My lucky number is: {} :)", BOT_NAME, BOT_LUCKY_NUMBER);
+    println!("Execution: Setting up environment.");
+    other::environment_methods::load_environment_variables();
+    other::environment_methods::initialize_logger();
+
+    println!("Execution: Creating bot.");
+    bot::bot_main::create_bot(&other::environment_methods::get_variable(other::environment_methods::DISCORD_TOKEN_KEY));
+
     if true 
     {
-        println!("Execution: Setting up environment.");
-        bot::environment_methods::load_environment_variables();
         println!("Execution: Starting bot.");
-        bot::example_bot_1_1::example_bot_1_1_main();
+        
         println!("Execution: Bot is dead!");
     }
     else 
@@ -23,7 +25,7 @@ fn main()
         slay_johnny_announcer();
         rise_of_weebs();
         other::guess_game::guess_game();
-        bot::example_bot_1::example_bot_1_main();
+        
     }
 }
 

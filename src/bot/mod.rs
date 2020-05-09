@@ -1,2 +1,2 @@
-pub mod example_bot_1;
-pub mod example_bot_1_1;
+pub mod bot_main;
+pub mod bot_personality;
