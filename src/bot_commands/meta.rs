@@ -21,3 +21,11 @@ fn pong(ctx: &mut Context, msg: &Message) -> CommandResult {
 
     Ok(())
 }
+
+
+#[command]
+fn cg_birth(ctx: &mut Context, msg: &Message) -> CommandResult {
+    msg.channel_id.say(&ctx.http, "Happy Birthday :cake:!")?;
+
+    Ok(())
+}

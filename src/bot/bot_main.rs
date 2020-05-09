@@ -61,7 +61,7 @@ impl EventHandler for Handler
     }
 }
 #[group("general")]
-#[commands(multiply, ping, pong, quit)]
+#[commands(multiply, ping, pong, cg_birth, quit)]
 struct General;
 
 //Methods
