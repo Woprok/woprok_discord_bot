@@ -3,7 +3,7 @@ use_expansion_serenity!();
 use rand::Rng;
 
 #[group]
-#[prefix = "math_"] //This is added after prefix.
+//#[prefix="math_"] //This is added after prefix.
 #[commands(multiply, addition, substract, divide, modulo, random)]
 pub struct Math;
 
@@ -16,7 +16,7 @@ fn multiply(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult
     let first = args.single::<f64>()?;
     let second = args.single::<f64>()?;
     let result = first * second;
-    msg.channel_id.say(&ctx.http, format!("{}*{}={}", first, second, result))?;
+    msg.channel_id.say(&ctx.http, format!("{}*{}={}", first.to_string(), second.to_string(), result.to_string()))?;
     Ok(())
 }
 #[command]

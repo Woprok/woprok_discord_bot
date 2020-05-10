@@ -11,7 +11,7 @@ pub struct Owners;
 
 //Methods
 #[command]
-//#[owners_only]
+#[owners_only]
 fn quit(ctx: &mut Context, msg: &Message) -> CommandResult 
 {
     let data = ctx.data.read();
@@ -21,11 +21,10 @@ fn quit(ctx: &mut Context, msg: &Message) -> CommandResult
     } 
     else 
     {
-        let _ = msg.reply(&ctx, "There was a problem getting the shard manager");
-
+        msg.reply(&ctx, "There was a problem getting the shard manager")?;
         return Ok(());
     }
-    let _ = msg.reply(&ctx, "Shutting down!");
+    msg.reply(&ctx, "Shutting down!")?;
     Ok(())
 }
 
@@ -35,9 +34,10 @@ fn quit(ctx: &mut Context, msg: &Message) -> CommandResult
 // In this case, this command checks to ensure you are the owner of the message
 // in order for the command to be executed. If the check fails, the command is
 // not called.
-#[check]
-#[name="owner"]
-fn owner_check(_: &mut Context, msg: &Message, _: &mut Args, _: &CommandOptions) -> CheckResult {
+//#[check]
+//#[name="owner"]
+//fn owner_check(_: &mut Context, msg: &Message, _: &mut Args, _: &CommandOptions) -> CheckResult 
+//{
     // Replace 7 with your ID to make this check pass.
     //
     // `true` will convert into `CheckResult::Success`,
@@ -52,8 +52,8 @@ fn owner_check(_: &mut Context, msg: &Message, _: &mut Args, _: &CommandOptions)
     //
     // and if the check's failure origin is unknown you can mark it as such (same as using `false.into`):
     // `CheckResult::new_unknown()`
-    (msg.author.id == 7).into()
-}
+//    (msg.author.id == 7).into()
+//}
 
 
 
