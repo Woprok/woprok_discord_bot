@@ -7,6 +7,8 @@ use std::
 {
     collections::HashSet,
     sync::Arc,
+    thread,
+    time::Duration
 };
 use serenity::
 {
@@ -19,7 +21,7 @@ use serenity::
     model::{channel::Message, event::ResumedEvent, gateway::Ready},
     prelude::*,
 };
-use log::{error, info};
+use log::{debug, error, info};
 
 use bot_commands::
 {
@@ -39,29 +41,29 @@ impl EventHandler for Handler
 {
     fn message(&self, ctx: Context, msg: Message) 
     {
-        if msg.content == "!w_pong"
-        {
-            println!("Shard {}", ctx.shard_id);
-            if let Err(why) = msg.channel_id.say(&ctx.http, "Ping From Primary Location!") 
-            {
-                println!("Error sending message: {:?}", why);                
-            }           
-        }
+        info!("Executing special commands.");
+        bot::bot_message_handlers::process_raw_message(&ctx, &msg);
+        debug!("We avoided special commands crash.");
     }
 
     fn ready(&self, _: Context, ready: Ready) 
     {
         info!("Connected as {}", ready.user.name);
         bot::bot_personality::present_yourself();
+        if let Some(shard) = ready.shard 
+        {
+            println!("{} is connected on shard {}/{}!", ready.user.name, shard[0], shard[1]);
+        }
     }
 
-    fn resume(&self, _: Context, _: ResumedEvent) 
+    fn resume(&self, _: Context, resume: ResumedEvent) 
     {
         info!("Resumed");
+        debug!("Resumed trace: {:?}", resume.trace);
     }
 }
 #[group("general")]
-#[commands(multiply, ping, pong, cg_birth, quit)]
+#[commands(multiply, ping, pong, cg_birth, ask_for_game, shard, quit)]
 struct General;
 
 //Methods
@@ -71,10 +73,7 @@ pub fn create_bot(token:&str)
     // Login with a bot token from the environment
     let mut client = Client::new(&token, Handler)
                              .expect("Error creating client");
-                            {
-                             let mut data = client.data.write();
-                             data.insert::<ShardManagerContainer>(Arc::clone(&client.shard_manager));
-                            }
+    shard(&client);
     let owners = match client.cache_and_http.http.get_current_application_info() 
     {
         Ok(info) => 
@@ -93,7 +92,7 @@ pub fn create_bot(token:&str)
                                              .group(&GENERAL_GROUP));
 
     // Start listening for events by starting a single shard
-    if let Err(why) = client.start() 
+    if let Err(why) = client.start()
     {
         error!("Client error: {:?}", why);
     }
@@ -103,4 +102,37 @@ fn shard(client:&serenity::client::Client)
 {
     let mut data = client.data.write();
     data.insert::<ShardManagerContainer>(Arc::clone(&client.shard_manager));
+}
+
+// Example function for creating multiple shard bot.
+#[allow(dead_code)]
+pub fn create_multishard_bot(token:&str, shard_count:u64)
+{
+    let mut client = Client::new(&token, Handler).expect("Err creating client");
+
+    // Here we clone a lock to the Shard Manager, and then move it into a new
+    // thread. The thread will unlock the manager and print shards' status on a
+    // loop.
+    let manager = client.shard_manager.clone();
+
+    thread::spawn(move || 
+    {
+        loop 
+        {
+            thread::sleep(Duration::from_secs(30));
+            let lock = manager.lock();
+            let shard_runners = lock.runners.lock();
+            for (id, runner) in shard_runners.iter() 
+            {
+                println!("Shard ID {} is {} with a latency of {:?}", id, runner.stage, runner.latency);
+            }
+        }
+    });
+
+    // Start two shards. Note that there is an ~5 second ratelimit period
+    // between when one shard can start after another.
+    if let Err(why) = client.start_shards(shard_count) 
+    {
+        println!("Client error: {:?}", why);
+    }
 }
