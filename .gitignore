@@ -12,3 +12,4 @@ Cargo.lock
 # My ignore files due to security
 .env
 resources/config.json
+resources/log.log
