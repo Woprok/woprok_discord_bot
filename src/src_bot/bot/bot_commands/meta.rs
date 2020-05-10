@@ -1,19 +1,9 @@
 //Usings, Mods, Crates, Macros
 use_expansion_serenity!();
 
-#[command]
-fn ping(ctx: &mut Context, msg: &Message) -> CommandResult 
-{
-    let _ = msg.channel_id.say(&ctx.http, "Pong!");
-    Ok(())
-}
-
-#[command]
-fn pong(ctx: &mut Context, msg: &Message) -> CommandResult 
-{
-    msg.channel_id.say(&ctx.http, "Ping!")?;
-    Ok(())
-}
+#[group("meta")]
+#[commands(cg_birth, ask_for_game, ask_for_chat)]
+pub struct Meta;
 
 #[command]
 fn cg_birth(ctx: &mut Context, msg: &Message) -> CommandResult 
@@ -30,8 +20,8 @@ fn ask_for_game(ctx: &mut Context, msg: &Message) -> CommandResult
 }
 
 #[command]
-fn shard(ctx: &mut Context, msg: &Message) -> CommandResult 
+fn ask_for_chat(ctx: &mut Context, msg: &Message) -> CommandResult 
 {
-    msg.channel_id.say(&ctx.http, format!("My shard is: {}", ctx.shard_id))?;
+    msg.channel_id.say(&ctx.http, "@everyone Ideme niekto kecat do voice?")?;
     Ok(())
 }

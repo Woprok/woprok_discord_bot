@@ -1,36 +1,12 @@
 //Usings, Mods, Crates, Macros
 use_expansion_serenity!();
+use crate::src_bot::bot::bot_core::bot_framework;
 use crate::src_bot::bot::bot_core::bot_main;
 use std::fmt::Write;
 
-#[command]
-fn bird(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult 
-{
-    let say_content = if args.is_empty() 
-    {
-        ":bird: can find animals for you.".to_string()
-    } 
-    else 
-    {
-        format!(":bird: could not find animal named: `{}`.", args.rest())
-    };
-    if let Err(why) = msg.channel_id.say(&ctx.http, say_content) 
-    {
-        println!("Error sending message: {:?}", why);
-    }
-    Ok(())
-}
-
-#[command]
-#[description = "Sends an emoji with a dog."]
-#[bucket = "emoji"]
-fn dog(ctx: &mut Context, msg: &Message) -> CommandResult {
-    if let Err(why) = msg.channel_id.say(&ctx.http, ":dog:") {
-        println!("Error sending message: {:?}", why);
-    }
-
-    Ok(())
-}
+#[group("normal")]
+#[commands(latency, about_role, some_long_command, say, commands)]
+pub struct Normal;
 
 #[command]
 fn latency(ctx: &mut Context, msg: &Message) -> CommandResult {
@@ -67,14 +43,6 @@ fn latency(ctx: &mut Context, msg: &Message) -> CommandResult {
     Ok(())
 }
 
-#[command]
-fn about(ctx: &mut Context, msg: &Message) -> CommandResult {
-    if let Err(why) = msg.channel_id.say(&ctx.http, "This is a small test-bot! : )") {
-        println!("Error sending message: {:?}", why);
-    }
-
-    Ok(())
-}
 
 #[command]
 // Limits the usage of this command to roles named:
@@ -146,7 +114,7 @@ fn commands(ctx: &mut Context, msg: &Message) -> CommandResult {
     let mut contents = "Commands used:\n".to_string();
 
     let data = ctx.data.read();
-    let counter = data.get::<bot_main::CommandCounter>().expect("Expected CommandCounter in ShareMap.");
+    let counter = data.get::<bot_framework::CommandCounter>().expect("Expected CommandCounter in ShareMap.");
 
     for (k, v) in counter {
         let _ = write!(contents, "- {name}: {amount}\n", name=k, amount=v);

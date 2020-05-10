@@ -161,9 +161,9 @@ fn special_save_anime(ctx:&Context, msg:&Message)
 // Ask other bot for cat.
 fn special_abuse_johnny_cat(ctx:&Context, msg:&Message)
 {
-    if msg.content == "!w_special_cat" || msg.content == "!w_cat"
+    if msg.content == "!w_special_cat"
     {
-        if let Err(why) = msg.channel_id.say(&ctx.http, "Johnny, my good slavenemy: Please give me a cat for my friend here.") 
+        if let Err(why) = msg.channel_id.say(&ctx.http, "Somebody, please give me a cat for my friend here.") 
         {
             println!("Error sending message: {:?}", why);                
         }

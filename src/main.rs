@@ -1,7 +1,12 @@
-//Mods
-//mod bot;
-//mod bot_commands;
-//use crate::bot_mod;
+extern crate chrono;
+extern crate fern;
+extern crate serde;
+extern crate serde_json;
+#[macro_use]
+extern crate log;
+#[macro_use]
+extern crate serde_derive;
+
 mod src_bot;
 mod src_other;
 
@@ -9,18 +14,18 @@ mod src_other;
 
 fn main()
 {
-    println!("Execution: Setting up environment.");
     src_other::environment_methods::load_environment_variables();
-    src_other::environment_methods::initialize_logger();
+    let config = src_other::environment_methods::load_config_variables("resources/config.json").unwrap();
+    //src_other::environment_methods::initialize_logger();
+    src_other::environment_methods::setup_log_system(config.logging_level).unwrap();
+    info!("Execution: Setting up configurable environment finished.");
 
-    println!("Execution: Creating bot.");
+    info!("Execution: Creating bot.");
     src_bot::bot::bot_core::bot_main::create_bot(&src_other::environment_methods::get_variable(src_other::environment_methods::DISCORD_TOKEN_KEY));
 
     if true 
-    {
-        println!("Execution: Starting bot.");
-        
-        println!("Execution: Bot is dead!");
+    {        
+        info!("Execution: Bot is dead!");
     }
     else 
     {

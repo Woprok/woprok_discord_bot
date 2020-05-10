@@ -1,0 +1,10 @@
+# This is example of config.json
+# General
+# Declares the level of logging to use. Read the documentation for the `log` and `env_logger` crates for more information.
+# debug, info etc.
+# RUST_LOG=debug
+# Was replaced by logging_level
+{
+    "logging_level": 0,
+    "prefix": "!w_"
+}

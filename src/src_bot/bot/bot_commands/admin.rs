@@ -1,6 +1,10 @@
 //Usings, Mods, Crates, Macros
 use_expansion_serenity!();
 
+#[group("admin")]
+#[commands(am_i_admin, slow_mode, ping_extra)]
+pub struct Admin;
+
 #[command]
 fn am_i_admin(ctx: &mut Context, msg: &Message) -> CommandResult 
 {
@@ -42,74 +46,11 @@ fn slow_mode(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult
 }
 
 #[command]
-// Adds multiple aliases
-#[aliases("kitty", "neko")]
-// Make this command use the "emoji" bucket.
-#[bucket = "emoji"]
-// Allow only administrators to call this:
-#[required_permissions("ADMINISTRATOR")]
-fn cat(ctx: &mut Context, msg: &Message) -> CommandResult 
-{
-    if let Err(why) = msg.channel_id.say(&ctx.http, ":cat:") 
-    {
-        println!("Error sending message: {:?}", why);
-    }
-    Ok(())
-}
-
-#[command]
 // Limit command usage to guilds.
-#[only_in(guilds)]
-#[checks(Owner)]
-fn ping_extra(ctx: &mut Context, msg: &Message) -> CommandResult {
-    if let Err(why) = msg.channel_id.say(&ctx.http, "Pong! : )") {
-        println!("Error sending message: {:?}", why);
-    }
-
+//#[only_in(guilds)]
+//#[checks(Owner)]
+fn ping_extra(ctx: &mut Context, msg: &Message) -> CommandResult 
+{
+    msg.channel_id.say(&ctx.http, "Pong! : )")?;
     Ok(())
-}
-// A function which acts as a "check", to determine whether to call a command.
-//
-// In this case, this command checks to ensure you are the owner of the message
-// in order for the command to be executed. If the check fails, the command is
-// not called.
-#[check]
-#[name = "Owner"]
-fn owner_check(_: &mut Context, msg: &Message, _: &mut Args, _: &CommandOptions) -> CheckResult {
-    // Replace 7 with your ID to make this check pass.
-    //
-    // `true` will convert into `CheckResult::Success`,
-    //
-    // `false` will convert into `CheckResult::Failure(Reason::Unknown)`,
-    //
-    // and if you want to pass a reason alongside failure you can do:
-    // `CheckResult::new_user("Lacked admin permission.")`,
-    //
-    // if you want to mark it as something you want to log only:
-    // `CheckResult::new_log("User lacked admin permission.")`,
-    //
-    // and if the check's failure origin is unknown you can mark it as such (same as using `false.into`):
-    // `CheckResult::new_unknown()`
-    (msg.author.id == 7).into()
-}
-
-// A function which acts as a "check", to determine whether to call a command.
-//
-// This check analyses whether a guild member permissions has
-// administrator-permissions.
-#[check]
-#[name = "Admin"]
-// Whether the check shall be tested in the help-system.
-#[check_in_help(true)]
-// Whether the check shall be displayed in the help-system.
-#[display_in_help(true)]
-fn admin_check(ctx: &mut Context, msg: &Message, _: &mut Args, _: &CommandOptions) -> CheckResult {
-    if let Some(member) = msg.member(&ctx.cache) {
-
-        if let Ok(permissions) = member.permissions(&ctx.cache) {
-            return permissions.administrator().into();
-        }
-    }
-
-    false.into()
 }
