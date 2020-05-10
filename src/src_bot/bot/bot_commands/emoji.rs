@@ -45,7 +45,6 @@ fn dog(ctx: &mut Context, msg: &Message) -> CommandResult
 #[command]
 #[aliases("kitty", "neko")] // Adds multiple aliases
 #[bucket = "emoji"] // Make this command use the "emoji" bucket.
-#[required_permissions("ADMINISTRATOR")] // Allow only administrators to call this:
 fn cat(ctx: &mut Context, msg: &Message) -> CommandResult 
 {
     msg.channel_id.say(&ctx.http, ":cat:")?; 

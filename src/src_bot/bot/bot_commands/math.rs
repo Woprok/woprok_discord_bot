@@ -3,15 +3,14 @@ use_expansion_serenity!();
 use rand::Rng;
 
 #[group]
-//#[prefix="math_"] //This is added after prefix.
+#[prefix="math"] //This is added after prefix along with a space.
 #[commands(multiply, addition, substract, divide, modulo, random)]
 pub struct Math;
 
 //Methods
-
 #[command]
 #[aliases("*")]
-fn multiply(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult 
+fn multiply(ctx:&mut Context, msg:&Message, mut args:Args) -> CommandResult 
 {
     let first = args.single::<f64>()?;
     let second = args.single::<f64>()?;

@@ -51,7 +51,7 @@ impl TypeMapKey for CommandCounter
 // This replaces the information that a user can pass
 // a command-name as argument to gain specific information about it.
 #[individual_command_tip =
-"Hello! こんにちは！Hola! Bonjour! 您好!\n\
+"Greetings my friend! Do you wish to see my wares?
 If you want more information about a specific command, just pass the command as argument."]
 // Some arguments require a `{}` in order to replace it with contextual information.
 // In this case our `{}` refers to a command's name.
@@ -68,9 +68,9 @@ If you want more information about a specific command, just pass the command as 
 // On another note, you can set up the help-menu-filter-behaviour.
 // Here are all possible settings shown on all possible options.
 // First case is if a user lacks permissions for a command, we can hide the command.
-#[lacking_permissions = "Hide"]
+#[lacking_permissions = "Strike"]
 // If the user is nothing but lacking a certain role, we just display it hence our variant is `Nothing`.
-#[lacking_role = "Nothing"]
+#[lacking_role = "Strike"]
 // The last `enum`-variant is `Strike`, which ~~strikes~~ a command.
 #[wrong_channel = "Strike"]
 // Serenity will automatically analyse and generate a hint/tip explaining the possible
@@ -91,7 +91,7 @@ pub fn construct_framework(owners:std::collections::HashSet<serenity::model::id:
             .with_whitespace(true)
             .on_mention(Some(bot_id))
             .prefix("!w_") //Prefix for all commands.
-            .delimiters(vec![", ", ","]) //Delimeters see doc.
+            .delimiters(vec![" ",", ", ","]) //Delimeters see doc.
             .owners(owners)) //Set bots owners.
         .before(|ctx, msg, command_name| //Functions executed before command execution.
         {
@@ -138,6 +138,7 @@ pub fn construct_framework(owners:std::collections::HashSet<serenity::model::id:
         .group(&ABOUT_GROUP)
         .group(&ADMIN_GROUP)
         .group(&EMOJI_GROUP)
+        .group(&GAME_GROUP)
         .group(&MATH_GROUP)
         .group(&META_GROUP)
         .group(&NORMAL_GROUP)   

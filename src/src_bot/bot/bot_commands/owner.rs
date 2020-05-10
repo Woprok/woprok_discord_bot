@@ -12,6 +12,7 @@ pub struct Owners;
 //Methods
 #[command]
 #[owners_only]
+#[required_permissions("ADMINISTRATOR")] // Allow only administrators to call this:
 fn quit(ctx: &mut Context, msg: &Message) -> CommandResult 
 {
     let data = ctx.data.read();
