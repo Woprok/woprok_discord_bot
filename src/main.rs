@@ -1,18 +1,20 @@
 //Mods
-mod bot;
-mod bot_commands;
-mod other;
+//mod bot;
+//mod bot_commands;
+//use crate::bot_mod;
+mod src_bot;
+mod src_other;
 
 //Usings
 
 fn main()
 {
     println!("Execution: Setting up environment.");
-    other::environment_methods::load_environment_variables();
-    other::environment_methods::initialize_logger();
+    src_other::environment_methods::load_environment_variables();
+    src_other::environment_methods::initialize_logger();
 
     println!("Execution: Creating bot.");
-    bot::bot_main::create_bot(&other::environment_methods::get_variable(other::environment_methods::DISCORD_TOKEN_KEY));
+    src_bot::bot::bot_core::bot_main::create_bot(&src_other::environment_methods::get_variable(src_other::environment_methods::DISCORD_TOKEN_KEY));
 
     if true 
     {
@@ -23,8 +25,7 @@ fn main()
     else 
     {
         slay_johnny_announcer();
-        rise_of_weebs();
-        other::guess_game::guess_game();
+        src_other::guess_game::guess_game();
         
     }
 }
@@ -32,9 +33,5 @@ fn main()
 fn slay_johnny_announcer()
 {
     println!("I have come to slay Johnny Pythagoras and claim his place!");
-}
-
-fn rise_of_weebs()
-{
     println!("Join us, you can't run away!");
 }

@@ -1,18 +1,6 @@
-//Usings
+//Usings, Mods, Crates, Macros
+use_expansion_serenity!();
 use std::{path::Path};
-use serenity::
-{
-    //client::bridge::gateway::ShardManager,
-    //framework::
-    //{
-        //StandardFramework,
-        //standard::macros::group,
-    //},
-    model::{channel::Message}, //event::ResumedEvent, gateway::Ready
-    utils::MessageBuilder,
-    http::AttachmentType,
-    prelude::*
-};
 
 //Methods
 // Wrapper around all message evaluations to remove clutter from bot_main handler.

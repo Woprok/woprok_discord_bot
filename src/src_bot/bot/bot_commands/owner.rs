@@ -1,14 +1,6 @@
-//Mods
-use crate::bot;
-
-//Usings
-use serenity::prelude::*;
-use serenity::model::prelude::*;
-use serenity::framework::standard::
-{
-    CommandResult,
-    macros::command,
-};
+//Usings, Mods, Crates, Macros
+use_expansion_serenity!();
+use crate::src_bot::bot;
 
 //Methods
 #[command]
@@ -16,7 +8,7 @@ use serenity::framework::standard::
 fn quit(ctx: &mut Context, msg: &Message) -> CommandResult 
 {
     let data = ctx.data.read();
-    if let Some(manager) = data.get::<bot::bot_main::ShardManagerContainer>() 
+    if let Some(manager) = data.get::<bot::bot_core::bot_main::ShardManagerContainer>() 
     {
         manager.lock().shutdown_all();
     } 

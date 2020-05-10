@@ -1,13 +1,6 @@
-//Usings
-use serenity::prelude::*;
-use serenity::model::prelude::*;
-use serenity::framework::standard::
-{
-    CommandResult,
-    macros::command,
-};
+//Usings, Mods, Crates, Macros
+use_expansion_serenity!();
 
-//Methods
 #[command]
 fn ping(ctx: &mut Context, msg: &Message) -> CommandResult 
 {
