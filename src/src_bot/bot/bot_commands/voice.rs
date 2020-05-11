@@ -276,6 +276,7 @@ fn play(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult
 
     if let Some(handler) = manager.get_mut(guild_id) 
     {
+        info!("{}", &url);
         let source = match voice::ytdl(&url) 
         {
             Ok(source) => source,
