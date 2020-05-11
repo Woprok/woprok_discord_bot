@@ -9,10 +9,17 @@ pub mod bot
         {
             use serenity::
             {
-                client::bridge::gateway::
+                client::Client,
+                client::EventHandler,
+                client::Context,
+                client::bridge::
                 {
-                    ShardId,
-                    ShardManager,
+                    voice::ClientVoiceManager,
+                    gateway::
+                    {
+                        ShardId,
+                        ShardManager,
+                    },
                 },
                 framework::
                 {
@@ -51,8 +58,10 @@ pub mod bot
                         Activity,
                     }, 
                     id::UserId,
+                    id::ChannelId,
                     prelude::*,
                     user::OnlineStatus,
+                    misc::Mentionable,
                 },
                 utils::
                 {
@@ -62,6 +71,10 @@ pub mod bot
                     Colour,
                 },
                 http::AttachmentType,
+                http::Http,
+                Result as SerenityResult,
+                voice,
+                voice::AudioReceiver,
                 prelude::*,
             };
         }  
@@ -77,6 +90,7 @@ pub mod bot
         pub mod meta;
         pub mod normal;
         pub mod owner;
+        pub mod voice;
     }
     pub mod bot_core
     {

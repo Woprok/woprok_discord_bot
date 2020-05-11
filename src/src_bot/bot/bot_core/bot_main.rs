@@ -9,6 +9,7 @@ use crate::src_bot::
         bot_commands::
         {
             bot_message_handlers,
+            voice as CommandVoice,
         },
         bot_core::
         {
@@ -109,6 +110,7 @@ fn shard(client:&serenity::client::Client)
     let mut data = client.data.write();
     data.insert::<bot_framework::CommandCounter>(HashMap::default());
     data.insert::<ShardManagerContainer>(Arc::clone(&client.shard_manager));
+    data.insert::<CommandVoice::VoiceManager>(Arc::clone(&client.voice_manager));
 }
 
 // Example function for creating multiple shard bot.

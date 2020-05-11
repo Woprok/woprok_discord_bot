@@ -11,6 +11,8 @@ pub fn process_raw_message(ctx: &Context, msg: &Message)
     special_safe_ping(&ctx, &msg);
     special_show_ferris(&ctx, &msg);
     special_atla(&ctx, &msg);
+    special_troll(&ctx, &msg);
+    special_troll_atla(&ctx, &msg);
     special_save_anime(&ctx, &msg);
     special_abuse_johnny_cat(&ctx, &msg);
 }
@@ -151,7 +153,7 @@ fn special_save_anime(ctx:&Context, msg:&Message)
 {
     if msg.content.to_lowercase().contains("anime") && msg.author.id != ctx.cache.read().user.id
     {
-        if let Err(why) = msg.channel_id.say(&ctx.http, "Anime is best! Join the bright side and get your waifu pillow now!") 
+        if let Err(why) = msg.channel_id.say(&ctx.http, "Ạnime is best! Join the bright side and get your waifu pillow now!") 
         {
             println!("Error sending message: {:?}", why);                
         }
@@ -167,5 +169,50 @@ fn special_abuse_johnny_cat(ctx:&Context, msg:&Message)
         {
             println!("Error sending message: {:?}", why);                
         }
+    }
+}
+
+// Provide pig.
+fn special_troll(ctx:&Context, msg:&Message) 
+{
+    if msg.content.to_lowercase().contains("troll")
+    {
+        let x = String::from("🐷");
+        if let Err(why) = msg.react(&ctx.http, ReactionType::Unicode(x))
+        {
+            println!("Error sending message: {:?}", why);                
+        }
+    }
+}
+
+// Save Atla or just troll emoji react.
+fn special_troll_atla(ctx:&Context, msg:&Message) 
+{
+    if msg.content.to_lowercase().contains("#6384")
+    {
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🐈")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇦")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇱")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇮")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇻")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇪")));
+    }
+    if msg.content.to_lowercase().contains("#0439")
+    {
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🐝")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇦")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇱")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇮")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇻")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇪")));
+    }
+    if msg.content.to_lowercase().contains("#1359")
+    {
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🐙")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇦")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇱")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇮")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇻")));
+        let _ = msg.react(&ctx.http, ReactionType::Unicode(String::from("🇪")));
     }
 }
