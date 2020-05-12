@@ -13,5 +13,5 @@ Cargo.lock
 .env
 resources/config.json
 resources/*.log
-resources/atla.jpg
+resources/*.jpg
 external_libs/*.exe
