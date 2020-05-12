@@ -56,7 +56,7 @@ fn about(ctx: &mut Context, msg: &Message) -> CommandResult
     msg.channel_id.send_message(&ctx.http, |m| {
         m.embed(|e| {
             e.color(Color::FOOYOO)
-                .title(&cache.user.name)
+             .title(&cache.user.name)
                 .thumbnail(cache.user.face())
                 .description(format!("I am incarnation of Chaos!\nMy version is: {}", env!("CARGO_PKG_VERSION")))
                 .field(

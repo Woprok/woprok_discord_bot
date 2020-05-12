@@ -72,6 +72,7 @@ pub mod bot
                 },
                 utils::
                 {
+                    EmbedMessageBuilding,
                     MessageBuilder,
                     content_safe, 
                     ContentSafeOptions,

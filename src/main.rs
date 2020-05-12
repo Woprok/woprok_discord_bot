@@ -23,7 +23,7 @@ fn main()
     info!("Execution: Creating bot.");
     src_bot::bot::bot_core::bot_main::create_bot(
         &src_other::environment_methods::get_variable(src_other::environment_methods::DISCORD_TOKEN_KEY), 
-        2);
+        1);
 
     if true 
     {        

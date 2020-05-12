@@ -132,8 +132,13 @@ fn commands(ctx: &mut Context, msg: &Message) -> CommandResult {
 #[aliases(w, wiki)]
 #[description("Search a term on Wikipedia.")]
 #[usage("<term>")]
-fn wikipedia(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
-    msg.channel_id.say(&ctx.http, format!("<https://en.wikipedia.org/wiki/{}>", bot_helpers::default_query(args.remains(), "Main_Page")),)?;
+fn wikipedia(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult 
+{
+    let response = MessageBuilder::new()
+    .push_named_link("Wikipedia", 
+    format!("<https://en.wikipedia.org/wiki/{}>", bot_helpers::default_query(args.remains(), "Main_Page")))
+    .build();
+    msg.channel_id.say(&ctx.http, &response)?; 
     Ok(())
 }
 
@@ -143,6 +148,10 @@ fn wikipedia(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
 #[usage("<term>")]
 fn wiktionary(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult 
 {
-    msg.channel_id.say(&ctx.http, format!("<https://en.wiktionary.org/wiki/{}>", bot_helpers::default_query(args.remains(), "Wiktionary:Main_Page")),)?;
+    let response = MessageBuilder::new()
+    .push_named_link("Wiktionary", 
+    format!("<https://en.wiktionary.org/wiki/{}>", bot_helpers::default_query(args.remains(), "Wiktionary:Main_Page")))
+    .build();
+    msg.channel_id.say(&ctx.http, &response)?; 
     Ok(())
 }
