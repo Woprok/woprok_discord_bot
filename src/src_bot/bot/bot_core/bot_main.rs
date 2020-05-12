@@ -10,6 +10,7 @@ use crate::src_bot::
         {
             bot_message_handlers,
             voice as CommandVoice,
+            calendar,
         },
         bot_core::
         {
@@ -75,11 +76,22 @@ impl EventHandler for Handler
         info!("Resumed");
         debug!("Resumed trace: {:?}", resume.trace);
     }
+
+    // We want to dispatch an event whenever a new reaction has been added.
+    fn reaction_add(&self, context: Context, reaction: Reaction) 
+    {
+        let dispatcher = 
+        {
+            let mut context = context.data.write();
+            context.get_mut::<calendar::DispatcherKey>().expect("Expected Dispatcher.").clone()
+        };
+        dispatcher.write().dispatch_event(&calendar::DispatchEvent::ReactEvent(reaction.message_id, reaction.user_id));
+    }
 }
 
 //Methods
 
-pub fn create_bot(token:&str)
+pub fn create_bot(token:&str, shard_count:u64)
 {    
     // Login with a bot token from the environment
     let mut client = Client::new(&token, Handler)
@@ -87,7 +99,7 @@ pub fn create_bot(token:&str)
     shard(&client);
     let (owners, bot_id) = match client.cache_and_http.http.get_current_application_info() 
     {
-        Ok(info) => 
+        Ok(info) => //Fetch bot id and owner
         {
             let mut owners = HashSet::new();
             owners.insert(info.owner.id);
@@ -98,10 +110,21 @@ pub fn create_bot(token:&str)
 
     client.with_framework(bot_framework::construct_framework(owners, bot_id));
 
-    // Start listening for events by starting a single shard
-    if let Err(why) = client.start()
+    info_shard_state(&client);
+
+    if shard_count == 1 // Start listening for events by starting a single shard
     {
-        error!("Client error: {:?}", why);
+        if let Err(why) = client.start()
+        {
+            error!("Client error: {:?}", why);
+        }
+    }
+    else // Start two shards. Note that there is an ~5 second ratelimit period between when one shard can start after another.
+    {
+        if let Err(why) = client.start_shards(shard_count) 
+        {
+            println!("Client error: {:?}", why);
+        }
     }
 }
 
@@ -111,17 +134,12 @@ fn shard(client:&serenity::client::Client)
     data.insert::<bot_framework::CommandCounter>(HashMap::default());
     data.insert::<ShardManagerContainer>(Arc::clone(&client.shard_manager));
     data.insert::<CommandVoice::VoiceManager>(Arc::clone(&client.voice_manager));
+    data.insert::<calendar::DispatcherKey>(Arc::new(RwLock::new(calendar::get_dispatcher(4))));
+    data.insert::<calendar::SchedulerKey>( Arc::new(RwLock::new(calendar::get_scheduler(4))));
 }
 
-// Example function for creating multiple shard bot.
-#[allow(dead_code)]
-pub fn create_multishard_bot(token:&str, shard_count:u64)
+fn info_shard_state(client:&serenity::client::Client)
 {
-    let mut client = Client::new(&token, Handler).expect("Err creating client");
-
-    // Here we clone a lock to the Shard Manager, and then move it into a new
-    // thread. The thread will unlock the manager and print shards' status on a
-    // loop.
     let manager = client.shard_manager.clone();
 
     thread::spawn(move || 
@@ -137,11 +155,4 @@ pub fn create_multishard_bot(token:&str, shard_count:u64)
             }
         }
     });
-
-    // Start two shards. Note that there is an ~5 second ratelimit period
-    // between when one shard can start after another.
-    if let Err(why) = client.start_shards(shard_count) 
-    {
-        println!("Client error: {:?}", why);
-    }
 }

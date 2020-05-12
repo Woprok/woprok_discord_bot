@@ -17,6 +17,7 @@ use crate::src_bot::
             normal::*,
             owner::*,
             voice::*,
+            calendar::*,
         },
         bot_core::
         {
@@ -53,7 +54,7 @@ If you want more information about a specific command, just pass the command as 
 #[lacking_permissions = "Strike"]
 #[lacking_role = "Strike"]
 #[wrong_channel = "Strike"]
-fn my_help(ctx: &mut Context, msg: &Message, args: Args, help_options: &'static HelpOptions, groups: &[&'static CommandGroup], owners: HashSet<UserId>) -> CommandResult 
+fn my_help(ctx:&mut Context, msg:&Message, args:Args, help_options:&'static HelpOptions, groups:&[&'static CommandGroup], owners:HashSet<UserId>) -> CommandResult 
 {
     help_commands::with_embeds(ctx, msg, args, help_options, groups, owners)
 }
@@ -118,5 +119,6 @@ pub fn construct_framework(owners:std::collections::HashSet<serenity::model::id:
         .group(&META_GROUP)
         .group(&NORMAL_GROUP)   
         .group(&OWNERS_GROUP)
-        .group(&VOICE_GROUP)         
+        .group(&VOICE_GROUP)
+        .group(&CALENDAR_GROUP)           
 }

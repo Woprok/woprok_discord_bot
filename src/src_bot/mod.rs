@@ -91,6 +91,7 @@ pub mod bot
         pub mod normal;
         pub mod owner;
         pub mod voice;
+        pub mod calendar;
     }
     pub mod bot_core
     {
