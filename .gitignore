@@ -12,4 +12,6 @@ Cargo.lock
 # My ignore files due to security
 .env
 resources/config.json
-resources/log.log
+resources/*.log
+resources/atla.jpg
+external_libs/*.exe
