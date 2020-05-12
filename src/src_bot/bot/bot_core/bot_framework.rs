@@ -1,4 +1,5 @@
 use_expansion_serenity!();
+use std::time::Instant;
 
 //Mods
 use crate::src_bot::
@@ -25,6 +26,7 @@ use crate::src_bot::
         bot_utils,
     }
 };
+use serde::de;
 use std::
 {
     collections::
@@ -34,14 +36,36 @@ use std::
     },
     sync::Arc,
     thread,
+    process,
     time::Duration,
     env,
+    fs,
     fmt::Write,
 };
 pub struct CommandCounter;
 impl TypeMapKey for CommandCounter
 {
     type Value = HashMap<String, u64>;
+}
+pub struct DefaultPrefix;
+impl TypeMapKey for DefaultPrefix 
+{
+    type Value = String;
+}
+pub struct Prefixes;
+impl TypeMapKey for Prefixes 
+{
+    type Value = Arc<RwLock<HashMap<GuildId, String>>>;
+}
+pub struct StartTime;
+impl TypeMapKey for StartTime 
+{
+    type Value = Instant;
+}
+pub struct PermissionsContainer;
+impl TypeMapKey for PermissionsContainer 
+{
+    type Value = Permissions;
 }
 
 #[help]
@@ -51,9 +75,16 @@ If you want more information about a specific command, just pass the command as 
 #[command_not_found_text = "Could not find: `{}`."]
 #[max_levenshtein_distance(3)] //How much it will try to fill to real command
 #[indention_prefix = "+"]
+#[embed_error_colour(RED)]
+#[embed_success_colour(FOOYOO)]
+#[dm_and_guild_text("In DMs and servers")]
+#[guild_only_text("Only in servers")]
 #[lacking_permissions = "Strike"]
+#[lacking_ownership = "Strike"]
 #[lacking_role = "Strike"]
 #[wrong_channel = "Strike"]
+#[strikethrough_commands_tip_in_dm(false)]
+#[strikethrough_commands_tip_in_guild(false)]
 fn my_help(ctx:&mut Context, msg:&Message, args:Args, help_options:&'static HelpOptions, groups:&[&'static CommandGroup], owners:HashSet<UserId>) -> CommandResult 
 {
     help_commands::with_embeds(ctx, msg, args, help_options, groups, owners)
@@ -66,9 +97,29 @@ pub fn construct_framework(owners:std::collections::HashSet<serenity::model::id:
         .configure(|c| c //create config.
             .with_whitespace(true)
             .on_mention(Some(bot_id))
-            .prefix("!w_") //Prefix for all commands.
             .delimiters(vec![" ",", ", ","]) //Delimeters see doc.
-            .owners(owners)) //Set bots owners.
+            .owners(owners) //Set bots owners.
+            //.prefix("!w_") //Prefix for all commands.
+            .dynamic_prefix(|ctx, msg| 
+            {
+                let data = ctx.data.read();
+                match data.get::<Prefixes>() 
+                {
+                    Some(prefixes) => msg
+                        .guild_id
+                        .and_then(|id| prefixes.read().get(&id).cloned())
+                        .or_else(|| {
+                            data.get::<DefaultPrefix>().cloned().or_else(|| {
+                                error!("Problem accessing default prefix");
+                                process::exit(1);
+                            })
+                        }),
+                    None => {
+                        error!("Problem accessing server prefixes");
+                        process::exit(1);
+                    }
+                }
+            }))
         .before(|ctx, msg, command_name| //Functions executed before command execution.
         {
             info!("Got command '{}' by user '{}'", command_name, msg.author.name);

@@ -2,10 +2,11 @@
 use_expansion_serenity!();
 use crate::src_bot::bot::bot_core::bot_framework;
 use crate::src_bot::bot::bot_core::bot_main;
+use crate::src_bot::bot::bot_utils::bot_helpers;
 use std::fmt::Write;
 
 #[group("normal")]
-#[commands(latency, about_role, some_long_command, say, commands)]
+#[commands(latency, about_role, some_long_command, say, commands, wikipedia, wiktionary)]
 pub struct Normal;
 
 #[command]
@@ -127,5 +128,21 @@ fn commands(ctx: &mut Context, msg: &Message) -> CommandResult {
     Ok(())
 }
 
+#[command]
+#[aliases(w, wiki)]
+#[description("Search a term on Wikipedia.")]
+#[usage("<term>")]
+fn wikipedia(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
+    msg.channel_id.say(&ctx.http, format!("<https://en.wikipedia.org/wiki/{}>", bot_helpers::default_query(args.remains(), "Main_Page")),)?;
+    Ok(())
+}
 
-
+#[command]
+#[aliases(wt)]
+#[description("Search a term on Wiktionary.")]
+#[usage("<term>")]
+fn wiktionary(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult 
+{
+    msg.channel_id.say(&ctx.http, format!("<https://en.wiktionary.org/wiki/{}>", bot_helpers::default_query(args.remains(), "Wiktionary:Main_Page")),)?;
+    Ok(())
+}

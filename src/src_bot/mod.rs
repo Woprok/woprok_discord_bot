@@ -7,8 +7,15 @@ pub mod bot
     {
         () =>
         {
+            use log::
+            {
+                info,
+                debug,
+                error
+            };
             use serenity::
             {
+                cache::Cache,
                 client::Client,
                 client::EventHandler,
                 client::Context,
@@ -69,6 +76,7 @@ pub mod bot
                     content_safe, 
                     ContentSafeOptions,
                     Colour,
+                    Color,
                 },
                 http::AttachmentType,
                 http::Http,
@@ -101,5 +109,6 @@ pub mod bot
     pub mod bot_utils
     {
         pub mod bot_personality;
+        pub mod bot_helpers;
     }
 }

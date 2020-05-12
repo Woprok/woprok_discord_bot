@@ -3,16 +3,27 @@ name = "woprok_discord_bot"
 version = "1.0.0"
 authors = ["Miroslav Valach <skvalach@gmail.com>"]
 edition = "2018"
-
+description = "A Discord bot for personal use."
+readme = "README.md"
+repository = "https://github.com/Woprok/woprok_discord_bot"
+license = "MIT"
+keywords = ["discord", "bot"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[badges]
+maintenance = { status = "actively-developed" }
 
 [dependencies.serenity]
 default-features = true
 features = ["voice"]
 version = "0.8"
 
+[dependencies.rand]
+default-features = true
+features = ["small_rng"]
+version = "0.7"
+
 [dependencies]
-rand = "0.7"
 kankyo = "0.3"
 hey_listen = "0.4.0"
 white_rabbit = "0.1.1"
@@ -26,3 +37,5 @@ fern = { version = "0.5.5", features = ["colored"] }
 serde = "1.0.57"
 serde_json = "1.0.17"
 serde_derive = "1.0.57"
+
+unicode-segmentation = "1.6"

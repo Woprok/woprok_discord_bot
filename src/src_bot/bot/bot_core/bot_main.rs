@@ -1,5 +1,7 @@
 //Usings, Mods, Crates, Macros
 use_expansion_serenity!();
+use std::time::Instant;
+use serde::de;
 
 //Mods
 use crate::src_bot::
@@ -32,13 +34,9 @@ use std::
     thread,
     time::Duration,
     env,
+    process,
+    fs,
     fmt::Write,
-};
-use log::
-{
-    debug, 
-    error, 
-    info
 };
 
 //Fields
@@ -123,7 +121,23 @@ pub fn create_bot(token:&str, shard_count:u64)
     {
         if let Err(why) = client.start_shards(shard_count) 
         {
-            println!("Client error: {:?}", why);
+            error!("Client error: {:?}", why);
+        }
+    }
+
+    // Write server-local prefixes to a file.
+    {
+        let data = client.data.read();
+        if let Some(prefixes) = data.get::<bot_framework::Prefixes>() {
+            match kankyo::key("PREFIX_FILE") {
+                Some(file) => {
+                    match fs::write(file, serde_json::to_string(&*prefixes.read()).unwrap()) {
+                        Ok(_) => info!("Prefix file successfully written"),
+                        Err(e) => error!("Problem writing prefix file: {:?}", e),
+                    }
+                }
+                None => error!("Expected a prefix file in the environment"),
+            }
         }
     }
 }
@@ -131,11 +145,46 @@ pub fn create_bot(token:&str, shard_count:u64)
 fn shard(client:&serenity::client::Client)
 {
     let mut data = client.data.write();
-    data.insert::<bot_framework::CommandCounter>(HashMap::default());
     data.insert::<ShardManagerContainer>(Arc::clone(&client.shard_manager));
+    data.insert::<bot_framework::CommandCounter>(HashMap::default());
     data.insert::<CommandVoice::VoiceManager>(Arc::clone(&client.voice_manager));
     data.insert::<calendar::DispatcherKey>(Arc::new(RwLock::new(calendar::get_dispatcher(4))));
     data.insert::<calendar::SchedulerKey>( Arc::new(RwLock::new(calendar::get_scheduler(4))));
+    data.insert::<bot_framework::DefaultPrefix>(match kankyo::key("PREFIX") 
+    {
+        Some(prefix) => prefix,
+        None => 
+        {
+            error!("Expected a default bot prefix in the environment");
+            process::exit(1);
+        }
+    });
+    data.insert::<bot_framework::PermissionsContainer>(
+        match kankyo::key("PERMS").and_then(|p| p.parse().ok()) 
+        {
+            Some(p) => Permissions::from_bits_truncate(p),
+            None => Permissions::empty(),
+        },
+    );
+    data.insert::<bot_framework::Prefixes>(Arc::new(RwLock::new(
+        {
+            match kankyo::key("PREFIX_FILE") 
+            {
+                Some(file) => fs::read_to_string(file)
+                    .map_err(de::Error::custom)
+                    .and_then(|contents| serde_json::from_str(&contents))
+                    .unwrap_or_else(|e| {
+                        warn!("Problem reading prefix file: {:?}", e);
+                        HashMap::new()
+                    }),
+                None => 
+                {
+                    error!("Expected a prefix file in the environment");
+                    process::exit(1);
+                }
+            }
+        })));
+    data.insert::<bot_framework::StartTime>(Instant::now());
 }
 
 fn info_shard_state(client:&serenity::client::Client)

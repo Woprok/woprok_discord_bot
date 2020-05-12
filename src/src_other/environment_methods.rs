@@ -14,7 +14,8 @@ use std::path::Path;
 //Constants
 pub const DISCORD_TOKEN_KEY:&str = "DISCORD_TOKEN";
 #[derive(Deserialize, Debug)]
-pub struct Config {
+pub struct Config 
+{
     pub logging_level: u64,
     pub prefix: String,
 }
